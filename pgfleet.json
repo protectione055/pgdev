@@ -1,0 +1,47 @@
+{
+  "baseDir": "/SSD/00/zzm/projects/PostgreSQL/pgdev",
+  "paths": {
+    "buildRoot": "/SSD/00/zzm/projects/PostgreSQL/pgdev/build",
+    "installRoot": "/SSD/00/zzm/projects/PostgreSQL/pgdev/install",
+    "dataRoot": "/SSD/00/zzm/projects/PostgreSQL/pgdev/data",
+    "logRoot": "/SSD/00/zzm/projects/PostgreSQL/pgdev/logs"
+  },
+  "instances": {
+    "pg19": {
+      "displayName": "PostgreSQL 19-dev",
+      "variant": "upstream",
+      "version": "19-dev",
+      "repo": "/SSD/00/zzm/projects/PostgreSQL/postgres",
+      "defaultBranch": "master",
+      "buildSystem": "configure",
+      "profiles": {
+        "debug": {
+          "configure": ["--enable-debug", "--enable-cassert"],
+          "cflags": "-O0 -g"
+        },
+        "release": {
+          "configure": [],
+          "cflags": "-O2"
+        }
+      }
+    },
+    "babelfish17": {
+      "displayName": "Babelfish PG 17",
+      "variant": "babelfish",
+      "version": "17",
+      "repo": "/SSD/00/zzm/projects/PostgreSQL/postgresql_modified_for_babelfish",
+      "defaultBranch": "BABEL_5_X_DEV__PG_17_X",
+      "buildSystem": "configure",
+      "profiles": {
+        "debug": {
+          "configure": ["--enable-debug", "--enable-cassert"],
+          "cflags": "-O0 -g"
+        },
+        "release": {
+          "configure": [],
+          "cflags": "-O2"
+        }
+      }
+    }
+  }
+}

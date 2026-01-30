@@ -23,10 +23,63 @@ pg_node_printer.py — GDB Python 扩展
 from __future__ import annotations
 import gdb
 import re
+import json
 
 # ------------------------------------------------------------
 # 工具函数
 # ------------------------------------------------------------
+def _tokenize_sexpr(s: str):
+    """把 nodeToString 输出分词"""
+    token = ""
+    for ch in s:
+        if ch in ("(", ")", " ", "\n", "\t"):
+            if token:
+                yield token
+                token = ""
+            if ch in ("(", ")"):
+                yield ch
+        else:
+            token += ch
+    if token:
+        yield token
+
+def _parse_sexpr(tokens):
+    """递归解析 S 表达式 -> Python list/atom"""
+    tok = next(tokens, None)
+    if tok is None:
+        return None
+    if tok == "(":
+        arr = []
+        while True:
+            peek = next(tokens, None)
+            if peek is None:
+                break
+            if peek == ")":
+                break
+            # 回退一个
+            tokens = (t for t in [peek] + list(tokens))
+            arr.append(_parse_sexpr(tokens))
+            tokens = iter(tokens)  # 确保迭代器复用
+        return arr
+    elif tok == ")":
+        return None
+    else:
+        return tok
+
+def _sexpr_to_json(s: str, max_depth: int | None = None):
+    """将 S-表达式字符串转换为 JSON"""
+    tokens = list(_tokenize_sexpr(s))
+    tree = _parse_sexpr(iter(tokens))
+
+    def limit_depth(obj, depth=0):
+        if max_depth is not None and depth >= max_depth:
+            return "{...}"
+        if isinstance(obj, list):
+            return [limit_depth(x, depth + 1) for x in obj]
+        return obj
+
+    tree = limit_depth(tree)
+    return json.dumps(tree, indent=2, ensure_ascii=False)
 
 def _value_to_address(val: gdb.Value) -> int:
     try:
@@ -250,7 +303,8 @@ class PgNodeCommand(gdb.Command):
             if mode_native:
                 raw = _node_to_string(expr)
                 if pretty:
-                    out = _pretty_format(raw, max_depth=max_depth)
+                    # out = _pretty_format(raw, max_depth=max_depth)
+                    out = _sexpr_to_json(raw, max_depth=max_depth)
                 else:
                     out = raw
             else:

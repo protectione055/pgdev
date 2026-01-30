@@ -1,0 +1,24 @@
+# Build and runtime outputs
+build/
+install/
+logs/
+data/
+
+# Local environment/config
+active.env
+.env
+.venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Editor/OS artifacts
+.vscode/
+*.swp
+.DS_Store
+
+# Debug artifacts
+.gdb_history
+core
+core.*
