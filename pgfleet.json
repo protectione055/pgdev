@@ -11,11 +11,13 @@
       "displayName": "PostgreSQL 19-dev",
       "variant": "upstream",
       "version": "19-dev",
+      "port": 5432,
       "repo": "/SSD/00/zzm/projects/PostgreSQL/postgres",
       "defaultBranch": "master",
       "buildSystem": "configure",
       "profiles": {
         "debug": {
+          "port": 55432,
           "configure": ["--enable-debug", "--enable-cassert"],
           "cflags": "-O0 -g"
         },
@@ -29,11 +31,13 @@
       "displayName": "Babelfish PG 17",
       "variant": "babelfish",
       "version": "17",
+      "port": 5433,
       "repo": "/SSD/00/zzm/projects/PostgreSQL/postgresql_modified_for_babelfish",
       "defaultBranch": "BABEL_5_X_DEV__PG_17_X",
       "buildSystem": "configure",
       "profiles": {
         "debug": {
+          "port": 55433,
           "configure": ["--enable-debug", "--enable-cassert"],
           "cflags": "-O0 -g"
         },
